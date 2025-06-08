@@ -6,8 +6,11 @@ topics: [ctf,osint]
 published: false
 ---
 ## はじめに
-2025/06/07-2025/06/08に開催されたDIVER OSINT CTF 2025に、チームメイト3人と出場していた。  
-競技中に残していた3人分のメモからWriteupを起こしたので残しておく。
+2025/06/07-2025/06/08に開催されたDIVER OSINT CTF 2025に、チームメイトと計3人で出場していた。    
+競技中に残していた3人分のメモからWriteupを起こしたので残しておく。 
+
+結果は66位/668組だった。 
+去年より下がってしまったので悔しい。
 
 ## introduction
 
@@ -52,15 +55,12 @@ https://drive.google.com/file/d/14LSICiwmUqG9xqAfAm75IVdGd7P12uoy/view?usp=shari
 
 - 情報は2025年2月28日に収集されており、オンライン上で確認できる。
 - ベンダーはBSSIDに準拠して判定せよ。
+[openwifimap](https://openwifimap.net/#map?bbox=48.853646831055556,2.3061203956604,48.87044540697354,2.3610520362854004)のサイトから探したけど、Map上にHitするspotなし
 
-### 解法
+[wifimap](https://www.wifimap.io/map/1109-paris?wifiHotspot=da2d9651-d7df-41a1-a935-ea69fc12e0f0)でWiFIスポットは見れたけど、BSSIDの取得ができず
 
-https://openwifimap.net/#map?bbox=48.853646831055556,2.3061203956604,48.87044540697354,2.3610520362854004ここのサイトから探したけど、Map上にHitするspotなし
-
-https://www.wifimap.io/map/1109-paris?wifiHotspot=da2d9651-d7df-41a1-a935-ea69fc12e0f0このサイトでWiFIスポットは見れたけど、BSSIDの取得ができず
-
-https://wigle.net/indexBSSIDの取得ができそうだったが、アクセスポイントが見つからない。もしかしたらアカウントを作ったら見れる情報が増えるかも。  
-と思ってアカウントを作成したが、too many requestと表示されて詳細な情報が出てこなかった。　 
+[wigle](https://wigle.net/index)でBSSIDの取得ができそうだったが、アクセスポイントが見つからない。  
+もしかしたらアカウントを作ったら見れる情報が増えるかも、と思ってアカウントを作成したが、too many requestと表示されて詳細な情報が出てこなかった。　 
 ここで中断してチームメイトにパスしたところ、「AIくんに聞いたら答えを教えてくれたよ」とのこと。なんか悔しい。   
 
 ### night_accident (100pt / 269 solves)  
@@ -85,7 +85,7 @@ https://www.youtube.com/watch?v=jHgqCpJNL28
 
 備考  
 これは別のチームメイトが問題に詰まった息抜きに作ったAA。  
-![p2t](/images/diver-osint-ctf-2025-writeup/image.png)
+![p2t](/images/diver-osint-ctf-2025-writeup/aa.png)
 
 
 
@@ -302,38 +302,125 @@ https://www.guineaecuatorialpress.com/noticias/primera_edicion_de_talentopoli
 ## recon
 
 ### 00_engineer (100pt / 346 solves)
+東京駅の近くでソフトウェアエンジニアの名札を拾った。おそらく落とし物だろう。
+このエンジニアが勤務している会社のWebサイト（トップページ）のURLを答えよ。
+![kodai](/images/diver-osint-ctf-2025-writeup/engineer.jpg)
 
+githubでユーザ名検索したらアカウントがHit。  
+ポートフォリオのコード内に会社名が記載されていた。
 ### 01_asset (473pt / 53 solves)
+"00_engineer" の問題で見つかった会社のCEOが持っていたスマートフォンの資産番号を答えよ。  
+
+解けず。  
+Kodai氏のGithubアカウントからXアカウントを発見。  
+Xの投稿で自作のGitハンズオンをCEOが実施した旨が記載されていたので、該当レポジトリのForkからCEOのGithubアカウントを発見。  
+（この段階で手癖でcommit logを見て `03_ceo`を先に解いてしまった。  
+CEOのGoogleCalenderが漏洩していたので予定を確認したが、定期的なMTGとリリース記念の立食パーティの予定があるのみ。  
+立食パーティの写真にスマホが映り込んでいる（もしくは`05_designer`の回答となる人物の情報が取得できる）ことを期待してしばらく掘ってみたが収穫なし。  
+写真映り込み系だろうと見越して、X, FB, Instagramのアカウントを探したが見つからず。  
+
+ところがどうやらInstagramにアカウントがあったらしい。  
+後追いで確認すると、PCからInstagramでユーザー検索をすると、完全一致ではHitせず末尾の一文字を欠落させて検索してHitした。  
+スマホから検索するとそのままHitするらしい。  
+Instagramの仕様を理解していないことがバレた。そしてこの挙動は一体何、、、？  
+![insta_not_found](/images/diver-osint-ctf-2025-writeup/insta_false.png)
+![insta_found](/images/diver-osint-ctf-2025-writeup/insta_true.png)
+
 
 ### 02_recruit (488pt / 37 solves)
+"00_engineer" の問題で見つかった会社で、採用を担当していると思われる人物の氏名を答えよ。
+Flag 形式: Diver25{Shigeru Ishiba} (ローマ字表記)  
+
+Kodai氏のXを読んでいたところ、会社のHPのリプレースを実施したみたいな投稿をしていたので、過去のHPがWebArchivesに載っていないかなと推測。 
+[WayBackMachine](https://web.archive.org/)にはなかったが、[archive.today](https://archive.md/sD2R0)には過去のページが載っており、このページには採用要項ページのリンクが残っていた。  
+当該ページがGoogleDocumentsだったので、Author情報を取れないかと試行錯誤。  
+DLしてきてプロファイルを見たりしても空。  
+最終的に、`Google Account OSINT`とかで調べたら[xeuledoc](https://github.com/Malfrats/xeuledoc)というツールを発見。  
+これでメールアドレスを取得した後、GhuntしたらGoogleMapのプロフィールページが公開されていたのでFlag GET。
 
 ### 03_ceo (302pt / 142 solves)
+"00_engineer" の問題で見つかった会社の、CEOのメールアドレス（Gmail）を答えよ。  
+`01_asset`の調査中に、CEOのGithubアカウントのcommit logにメールアドレスが残っているの発見した。 
+
 
 ### 04_internal (416pt / 93 solves)
+"00_engineer" の問題で見つかった会社では、Webブラウザからアクセス可能な社内用のDevOpsプラットフォームが運用されている。
+そのシステムのバージョン名を、表記されている通りに答えよ。
 
-### 05_designer (500pt / 7 solves)
+Webブラウザからアクセス可能なプラットフォームと書いているので、とりあえず現状持っている情報のなかで唯一会社が管理してそうなWeb Surfaceを持つHPを調べようと方針決定。  
+digしてから[open port](https://www.shodan.io/host/202.212.71.93)を見たら`Gitea`が動いているのを発見。
+```
+$ dig magneight.com
 
-### 06_leaked (499pt / 12 solves)
+; <<>> DiG 9.18.12-0ubuntu0.22.04.2-Ubuntu <<>> magneight.com
+;; global options: +cmd
+;; Got answer:
+;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 54868
+;; flags: qr rd ra; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 1
+
+;; OPT PSEUDOSECTION:
+; EDNS: version: 0, flags:; udp: 512
+;; QUESTION SECTION:
+;magneight.com.                 IN      A
+
+;; ANSWER SECTION:
+magneight.com.          1997    IN      A       202.212.71.93
+
+;; Query time: 43 msec
+;; SERVER: 10.255.255.254#53(10.255.255.254) (UDP)
+;; WHEN: Sat Jun 07 15:02:00 JST 2025
+;; MSG SIZE  rcvd: 58
+```
+まぁGitもDevOpsプラットフォームか...と思いながらWeb当該ポートにWebアクセスすると左下にバージョン情報が書いてあった。  
+ついでに、この段階ではIP直打ちでアクセスしており、サインイン画面にいくとWarningが出る。  
+![gitea](/images/diver-osint-ctf-2025-writeup/gitea.png)
+別途見つけていた`magn8soft.tokyo`というドメインに`gitea.magn8soft.tokyo`というサブドメインが生えており、こちらだと（httpsが使えるので）Warningを回避できる。  
+社内の正規利用を模しているのと、もしかして`06_leaked`で実際にログインとかするのかなぁと思っていたら、このドメインもWebArchives経由で情報が取れたらしい。  
+これに気づかず`05_designer`は撃沈した。
 
 ## transportation
 
 ### 36_years_ago (347pt / 125 solves)
+このニュース動画に映っている航空機に、1989年8月時点で割り当てられていたトランスポンダのMode Sコードを16進数表記で答えてください。
+https://www.youtube.com/watch?v=OvR2O_Vpwc0
+Flag形式: Diver25{1234AB}  
 
-### air2air (495pt / 24 solves)
 
-### listen (473pt / 53 solves)
-
-### next_train (100pt / 245 solves)
+ひたすら調べてたら以下が見つかった。
+https://www.aviationdb.com/Aviation/Aircraft/9/N9768L.shtm
 
 ### platform (136pt / 192 solves)
+この写真が撮影された駅はどこか。駅名を答えよ（日本語でも英語でも可）。
+（駅名は鉄道会社の公式サイトやWikipediaに記載されている表記とする）
+![platfomrm](/images/diver-osint-ctf-2025-writeup/platform.jpg)
+写真に写っている足元の車両表示の色から、小田原線に目処をつける。  
+あまり栄えていなさそうな駅だったので、西の方からあたっていくも見つからず断念。  
+と思ったらチームメイトが「らいと」のGoogle map検索から発見してくれた。  
+一回検索してみてもHit数が多すぎて諦めていたけど、そっちからちゃんとできたらしい。  
+チームメイトに感謝。
 
 ### sanction (375pt / 112 solves)
+2024年10月25日、制裁下にあるロシア船籍のRORO船「ANGARA」がある港湾に停泊していることが衛星画像で確認された。  
+停泊位置を答えよ。  
 
+ググると北朝鮮の羅津港とわかる。 
+報告書を探すと衛星画像が載っていた。
 ## history
 
 ### bridge (263pt / 155 solves)
+動画 / Video:
+https://www.youtube.com/watch?v=fRMi8TXQRuo
+（無音です / No audio）
 
-### internment (478pt / 48 solves)
+この動画で列車が通過した橋梁は、ある災害で損傷した後に架け替えられたものである。架け替えに際して、他の橋梁の構造物が流用されたことがある文献に示されている。その流用元の橋梁名を答えよ（この橋の名前ではない）。
+Flag形式: Diver25{橋梁名}（例: Diver25{日本橋川橋梁}）  
+
+熊本県の豊肥本線JR東海大学-竜田口間の橋であることをGoogle検索から特定。 
+
+以下の文献から、この橋の名前が第二白川橋梁であることを発見。  
+
+https://kanenohashi.com/index.php?act=detl&id=1022&page=0
+https://kumadai.repo.nii.ac.jp/record/23247/files/24-0097-1.pdf
 
 ## company
 
@@ -361,19 +448,41 @@ https://www.globaltenders.com/tender-detail/drilling-well-bore-supply-installati
  
 公募の情報は公開されていたが、落札者情報は見つかられず。各種サイトのアカウントを作って中を除いてみたが、FreePlanの範囲だと見れなさそうだった。断念。
 
-### expense (499pt / 13 solves)
-
 ## hardware
 
 ### UART (495pt / 24 solves)
+https://www.office-partner.de/tp-link-archer-ax20-12778639
+
+この商品のイーサネットスイッチコントローラに直接UARTでアクセスを試みたい。どの部品の、どのピンにアクセスすればいいだろうか。
+PCB上の部品番号 と、その部品の UART RX / UART TX ピン番号 を答えよ。ピン番号は部品の仕様に準拠せよ。
+なお、ピンヘッダやコネクタが利用可能な場合でも、イーサネットスイッチコントローラのピン番号を答えてほしい。  
+
+解けず。  
+[FCC ID](https://fccid.io/TE7AX20/Internal-Photos/18-Internal-Photos-4506039)から、中の基板の写真を入手。  
+チップっぽいのを一つずつ眺めていった結果、おそらく対象のコントローラは`BCM53134SKFBG`だと推定。  
+[データシート](https://www.farnell.com/datasheets/2830672.pdf)などを探索するも、答えになりそうなピンの対応表が見つからずに断念。  
+ハードウェア系は自作キーボード作るときにしか触ったことがなかったので知見が浅い。 
 
 ### phone (441pt / 78 solves)
+2016年7月23日～24日、この携帯電話の発売に先立ってEMI試験が行われた。試験は三重県の会社が実施したようだ。その試験に供された端末のシリアル番号を答えよ。
+シリアル番号に / や - といった記号を含む場合、その記号も含めて記載すること。
+Flag形式（例）: Diver25{123-45/6789-0}  
+![phone](/images/diver-osint-ctf-2025-writeup/phone.jpg)  
+この携帯電話は、（多分多くの携帯電話がそうだと思うけど）各国で発売するために日本の技適の他に米国のFCCという規格も通しているらしい。  
+そしてFCCは審査に使ったレポートを公開している。
+（技適番号から三重県の試験会社とやらを特定したけど使わなかった）
+
+型番で調べると[説明書](https://www.docomo.ne.jp/binary/pdf/support/manual/SH-01J_J_syousai_FV2.pdf)が出てくるので、そこからFCC IDを`APYHRO00240`取得
+FCCのサイトでIDを使って調べるとこんな[ページ](https://apps.fcc.gov/oetcf/eas/reports/ViewExhibitReport.cfm?mode=Exhibits&RequestTimeout=500&calledFromFrame=N&application_id=zFxEadpybDvi929GAjZCVw%3D%3D&fcc_id=APYHRO00240)にレポートが公開されている。
+
+レポートに書いてあったSerial  NumberをSubmitして正解
 
 ## military
 
 ### object (359pt / 120 solves)
+69.216246, 33.378242 には大きな構造物が存在する。この構造物のプロジェクト番号および、構造物の名称（固有名詞）を 現地語 で答えよ。
+Flag形式: Diver25{プロジェクト番号_名称}（例: Diver25{955А_Борей-А}）
 
-### worker (499pt / 12 solves)
-
-### radar (481pt / 45 solves)
+画像検索をひたすら開くと、以下のサイトを見つけて、その中にFlagを発見。
+https://sdelanounas.ru/blogs/113208/
 
