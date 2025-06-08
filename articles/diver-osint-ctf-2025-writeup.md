@@ -3,7 +3,7 @@ title: "DIVER OSINT CTF 2025 Writeup"
 emoji: "🦎"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [ctf,osint]
-published: false
+published: true
 ---
 ## はじめに
 2025/06/07-2025/06/08に開催されたDIVER OSINT CTF 2025に、チームメイトと計3人で出場していた。    
