@@ -83,7 +83,7 @@ https://www.youtube.com/watch?v=jHgqCpJNL28
 [こんなもの](https://www.tsm.toyama.toyama.jp/_ex/public/kenkyu/32.pdf)を見つけて、野鳥の会の研究報告を博物館に展示しているパターンや、登山ルート中の山小屋やホテルの一角に貼られているパターンを想定して長い事探索していた。  
 結局、チームメイトが[このサイト](https://yachou.info/murodoudaira-raichou/)を見つけてくれてゴール。  
 
-備考  
+**備考**
 これは別のチームメイトが問題に詰まった息抜きに作ったAA。  
 ![p2t](/images/diver-osint-ctf-2025-writeup/aa.png)
 
@@ -110,15 +110,17 @@ https://web.archive.org/web/20250108154113/https://www.noticiasaominuto.com/mund
 ### hole (449pt / 72 solves)
 この穴があった場所はどこか。
 ![hole](/images/diver-osint-ctf-2025-writeup/hole.png)
-明らかに大きな滑走路っぽい道路と大穴。 右下の文章から、中国圏のドローンの飛行場や実験場と推測。  
+明らかに大きな滑走路っぽい道路と大穴。 右下の文章から、中国圏の飛行場やドローン実験場と推測。  
 ドローン関係の映像を漁っていたが見つからず。断念。
 ### night_street (428pt / 86 solves)
 画像の中心に写っている茶色の2階建ての建物に入る施設の正式名称を現地語表記で答えなさい。
 Flag形式: Diver25{施設名}（例: Diver25{お台場海浜公園前郵便局}）
 ![night](/images/diver-osint-ctf-2025-writeup/night_street.jpg)
 
-リンガーハットが左にあるので、[ここ](https://shop.ringerhut.jp/all/?page=2)リンガーハットの場所調べてgoogle mapsでローラー。  
-イオンとかフードコートは無視で探すも数多すぎて無理、店舗検索の絞り込みで駐車場+ドライブスルーで全部見たけどなし、道路が片側2車線以上でコンクリ舗装のためトラックの交通が多い道、港湾道路とかかな～と思いつつ愛知県の店舗でローラーして発見
+リンガーハットが左にあるので、[ここ](https://shop.ringerhut.jp/all/?page=2)リンガーハットの場所調べてgoogle mapsでローラーを実施。  
+イオンとかフードコートは無視で探すも数多すぎて無理。  
+店舗検索の絞り込みで駐車場+ドライブスルーで全部見たけどなし。  
+道路が片側2車線以上でコンクリ舗装のためトラックの交通が多い道、港湾道路とかかな～と思いつつ愛知県の店舗でローラーして発見
 
 ### convenience (462pt / 63 solves)
 青森県内に、公園とコンビニ、スーパーマーケットが互いに約100m圏内に存在する場所がいくつかある。また、これはOpenStreetMapで確認可能である。
@@ -320,7 +322,7 @@ CEOのGoogleCalenderが漏洩していたので予定を確認したが、定期
 写真映り込み系だろうと見越して、X, FB, Instagramのアカウントを探したが見つからず。  
 
 ところがどうやらInstagramにアカウントがあったらしい。  
-後追いで確認すると、PCからInstagramでユーザー検索をすると、完全一致ではHitせず末尾の一文字を欠落させて検索してHitした。  
+後追いで確認すると、PCからInstagramでユーザー検索をすると、完全一致ではHitせず末尾の一文字を欠落させて検索するとHitした。  
 スマホから検索するとそのままHitするらしい。  
 Instagramの仕様を理解していないことがバレた。そしてこの挙動は一体何、、、？  
 ![insta_not_found](/images/diver-osint-ctf-2025-writeup/insta_false.png)
@@ -340,7 +342,9 @@ DLしてきてプロファイルを見たりしても空。
 
 ### 03_ceo (302pt / 142 solves)
 "00_engineer" の問題で見つかった会社の、CEOのメールアドレス（Gmail）を答えよ。  
-`01_asset`の調査中に、CEOのGithubアカウントのcommit logにメールアドレスが残っているの発見した。 
+
+
+`01_asset`の調査中に、CEOのGithubアカウントのcommit logにメールアドレスが残っているのを発見した。 
 
 
 ### 04_internal (416pt / 93 solves)
