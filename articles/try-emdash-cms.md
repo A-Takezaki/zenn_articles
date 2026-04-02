@@ -3,7 +3,7 @@ title: "WordPress後継CMS「EmDash」を触ってみる"
 emoji: "🦎"
 type: "tech" # tech: 技術記事 / idea: アイデア
 topics: [Cloudflare,WordPress,EmDash]
-published: false
+published: ture
 ---
 ## はじめに
 
