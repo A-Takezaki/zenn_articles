@@ -8,12 +8,12 @@ published: true
 # published_at: 2024-12-24 09:00 # 未来の日時を指定する
 ---
 ## はじめに
-自分は身内で使うdiscord用のBOTを作って自宅鯖で動かしているのだが、最近書いたコードを実行先の環境に移すのが手間になってきた。
-よって個人開発環境のCI/CDを整備することにした。
+自分は身内で使う discord 用の BOT を作って自宅鯖で動かしているのだが、最近書いたコードを実行先の環境に移すのが手間になってきた。
+よって個人開発環境の CI/CD を整備することにした。
 
 その一環として、ビルドしたコンテナを自宅サーバーにデプロイすることを計画している。
 
-実現方法として、GitHub Actions上でコンテナをビルドし、自宅サーバーにSSH接続してコンテナリポジトリからpullする構成を作ってみることにした。
+実現方法として、GitHub Actions 上でコンテナをビルドし、自宅サーバーに SSH 接続してコンテナリポジトリから pull する構成を作ってみることにした。
 
 ```mermaid
 flowchart LR
@@ -38,11 +38,11 @@ flowchart LR
 
 ```
 
-この記事では、GitHub Actionsから自宅サーバーへのSSH接続部分について備忘録として記載する。
+この記事では、GitHub Actions から自宅サーバーへの SSH 接続部分について備忘録として記載する。
 
 ## Cloudflare Tunnelとは
-Cloudflare社が提供する、外部からの直接的なアクセスなしにローカルサーバーを公開できるサービス。
-ngrokみたいなもの。
+Cloudflare 社が提供する、外部からの直接的なアクセスなしにローカルサーバーを公開できるサービス。
+ngrok みたいなもの。
 https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/
 
 このサービスの一部に、クレデンシャルレス、自前ドメイン不要でローカルサーバーを公開する`trycloudflare` という機能もあるが、今回はそれを使わずに安定的なトンネルを作成する方針にする。
@@ -58,17 +58,17 @@ cloudflared version 2025.1.0 (built 2025-01-07-1219 UTC)
 
 ## Cloudflare Tunnelのセットアップ
 
-Cloudflare Tunnelの設定方法はダッシュボードのGUIからやる方法とCLIとconfigファイルベースでやる方法の二種類ある。
+Cloudflare Tunnel の設定方法はダッシュボードの GUI からやる方法と CLI と config ファイルベースでやる方法の二種類ある。
 
-楽なのは圧倒的にCLIベースなのだが、管理の一元化の観点からダッシュボードからやる方法を採用した。
+楽なのは圧倒的に CLI ベースなのだが、管理の一元化の観点からダッシュボードからやる方法を採用した。
 
 ### Tunnelの作成
 
-1. Zero Trust > Network > Tunnlesから、「トンネルを作成する」を選択
+1. Zero Trust > Network > Tunnles から、「トンネルを作成する」を選択
   ![Tunnel作成](/images/github-actions-to-cloudflare-tunnnel/add_tunnel.png)
-2. Cloudflaredを選択
+2. Cloudflared を選択
   ![Tunnel作成](/images/github-actions-to-cloudflare-tunnnel/choice_cloudflared.png)
-3. Tunnelの名前を入力する。
+3. Tunnel の名前を入力する。
   ![Tunnel作成](/images/github-actions-to-cloudflare-tunnnel/add_tunnel_name.png)
 4. 表示されたインストールコマンドをコピーしておいて、「次へ」を選択する。
   ![Tunnel作成](/images/github-actions-to-cloudflare-tunnnel/install_command.png)
@@ -79,10 +79,10 @@ Cloudflare Tunnelの設定方法はダッシュボードのGUIからやる方法
 
 ### Service Tokenの作成
 
-Service Tokenは、Cloudflare Zero Trustの機能の一つで、APIやサービス間の認証に使用される認証情報のこと。
-人間のユーザーではなく、プログラムやサービスがCloudflareのリソースにアクセスする際に使用する。
+Service Token は、Cloudflare Zero Trust の機能の一つで、API やサービス間の認証に使用される認証情報のこと。
+人間のユーザーではなく、プログラムやサービスが Cloudflare のリソースにアクセスする際に使用する。
 
-今回のケースでは、GitHub ActionsからCloudflare Tunnelに接続する際の認証に使用する。
+今回のケースでは、GitHub Actions から Cloudflare Tunnel に接続する際の認証に使用する。
 
 https://developers.cloudflare.com/cloudflare-one/identity/service-tokens/
 
@@ -112,7 +112,7 @@ https://developers.cloudflare.com/cloudflare-one/identity/service-tokens/
 2. 「セルフホスト」を選択する
   ![Application作成](/images/github-actions-to-cloudflare-tunnnel/add_selfhost.png)
 3. 「アプリケーション名」「セッション時間」を入力し、「パブリックホスト名を追加」を押す
-    - 「パブリックホスト名」にTunnel で入力したドメインを入力する
+    - 「パブリックホスト名」に Tunnel で入力したドメインを入力する
       ![Application作成](/images/github-actions-to-cloudflare-tunnnel/config_app.png)
 4. ポリシータブに移動
 5. 先ほど作成したポリシーを適用する
@@ -124,7 +124,7 @@ https://developers.cloudflare.com/cloudflare-one/identity/service-tokens/
 
 ### cloudflaredのインストール
 
-Tunnel作成時に表示されていたインストールコマンドをデプロイ先サーバーで実行する
+Tunnel 作成時に表示されていたインストールコマンドをデプロイ先サーバーで実行する
 
 ```bash
 curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb && 
@@ -136,17 +136,17 @@ sudo cloudflared service install [TOKEN]
 
 ### Tunnelの接続
 
-Tunnelの設定とcloudflaredのインストールが正常に成功していたら、画像下のように`Healty` と表示されるのでこれを確認する。
+Tunnel の設定と cloudflared のインストールが正常に成功していたら、画像下のように`Healty` と表示されるのでこれを確認する。
 
 ![Tunnel接続確認](/images/github-actions-to-cloudflare-tunnnel/check_tunnel.png)
 
 ## ssh公開鍵の設定
 
-Github Actionsからパスワード無しでSSHを張るために、それ用のキーペアを作成する。
+Github Actions からパスワード無しで SSH を張るために、それ用のキーペアを作成する。
 
 以下のコマンドをローカルで実行。
 
-ここで作成された秘密鍵は、後ほどGithubに登録するので控えておく。
+ここで作成された秘密鍵は、後ほど Github に登録するので控えておく。
 
 ```bash
 ssh-keygen -t ed25519 -f ~/.ssh/github_actions -C "github-actions"
@@ -191,18 +191,18 @@ jobs:
 ```
 
 :::message
-Install cloudflared Stepにあるように、cloudfalredをGithub Actions Runner側にも導入する必要があることに注意。
-`SSH_PROXY_COMMAND` としてcloudflaredを叩く必要がある。（一敗）
+Install cloudflared Step にあるように、cloudfalred を Github Actions Runner 側にも導入する必要があることに注意。
+`SSH_PROXY_COMMAND` として cloudflared を叩く必要がある。（一敗）
 :::
 ## シークレットの設定
 
-`CLOUDFLARED_SSH_ID` 、`CLOUDFLARED_SSH_SECRET` 、`SSH_PRIVATE_KEY` をGithub Actions secrets に登録する。
+`CLOUDFLARED_SSH_ID` 、`CLOUDFLARED_SSH_SECRET` 、`SSH_PRIVATE_KEY` を Github Actions secrets に登録する。
 
-`CLOUDFLARED_SSH_ID` と`CLOUDFLARED_SSH_SECRET` はそれぞれService Tokenを作成したときに発行されたIDとSecret。
+`CLOUDFLARED_SSH_ID` と`CLOUDFLARED_SSH_SECRET` はそれぞれ Service Token を作成したときに発行された ID と Secret。
 
 ## 結果
 
-以下のような実行結果がGithub Actionsから得られた。
+以下のような実行結果が Github Actions から得られた。
 
 ```bash
 Run ssh -i  ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ProxyCommand="$SSH_PROXY_COMMAND" [username]@[target-domain.com] whoami
@@ -211,9 +211,9 @@ Run ssh -i  ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o ProxyCommand="$SSH_PROX
 
 ## まとめ
 
-- Cloudflare Tunnelを使って自宅サーバーのSSHを公開した。
-- 自宅サーバーへGithub ActionsからSSHしてコマンドを叩けた。
-- NextActionは以下
-    - Github Actions上でコンテナをビルドする
-    - Github Actions上でコンテナをコンテナリポジトリにpush
-    - Github Actionsから自宅サーバー内でコンテナをpullするコマンドを実行
+- Cloudflare Tunnel を使って自宅サーバーの SSH を公開した。
+- 自宅サーバーへ Github Actions から SSH してコマンドを叩けた。
+- NextAction は以下
+    - Github Actions 上でコンテナをビルドする
+    - Github Actions 上でコンテナをコンテナリポジトリに push
+    - Github Actions から自宅サーバー内でコンテナを pull するコマンドを実行

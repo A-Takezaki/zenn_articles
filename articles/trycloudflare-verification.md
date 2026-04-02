@@ -10,33 +10,33 @@ published_at: 2024-12-28 09:00 # 未来の日時を指定する
 
 筆者は普段はサイバーセキュリティ分野や脅威インテリジェンス（Cyber Threat Intelligence）に関わる業務を行っている。
 
-RATツールがtrycloudflareを使って使い捨てのホスティングをしているらしいので、どれくらい楽にできるのかを実際に試してみることにした。
+RAT ツールが trycloudflare を使って使い捨てのホスティングをしているらしいので、どれくらい楽にできるのかを実際に試してみることにした。
 
 https://iototsecnews.jp/2024/08/01/hackers-abuse-free-trycloudflare-to-deliver-remote-access-malware/
 
 https://www.proofpoint.com/jp/blog/threat-insight/threat-actor-abuses-cloudflare-tunnels-deliver-rats
 
-好奇心の起点はリサーチャー視点だけど、開発者視点でもCloudflareを使っており、便利なら使えるようにしておこうという考えもある。
+好奇心の起点はリサーチャー視点だけど、開発者視点でも Cloudflare を使っており、便利なら使えるようにしておこうという考えもある。
 
 結果から言うと、とても簡単にローカル環境を公開できるので便利だということがわかった。
 
 ## 本記事を読んで嬉しい人
 
-- trycloudflareを使ったサーバー公開の簡単さを体験したい人
-    - セキュリティリサーチャーで、RATツール配信の実際の挙動を知りたい人
+- trycloudflare を使ったサーバー公開の簡単さを体験したい人
+    - セキュリティリサーチャーで、RAT ツール配信の実際の挙動を知りたい人
     - 開発者で、簡易的な一時公開環境が欲しい人
     - 自宅にサーバーがあって、とりあえずインターネット公開を試してみたい人
 
 ### 話さないこと
 
-- 具体的なRATツール配信の挙動
+- 具体的な RAT ツール配信の挙動
 - サイバーセキュリティっぽい観点はこの記事には含みません
 
 ## 準備
 
-- 適当に自宅Proxmox上にVMを用意する
-    - 別になんでもいいのだが、筆者の自宅に立っているのがProxmoxなのでこれを使った。
-    - 試すだけならWSLとかでもいい気がする。
+- 適当に自宅 Proxmox 上に VM を用意する
+    - 別になんでもいいのだが、筆者の自宅に立っているのが Proxmox なのでこれを使った。
+    - 試すだけなら WSL とかでもいい気がする。
 - 適当に公開するサーバーを作成しておく
     
     ```python
@@ -47,7 +47,7 @@ https://www.proofpoint.com/jp/blog/threat-insight/threat-actor-abuses-cloudflare
 
 ## やること
 
-- **`cloudflared`** をinstallする。[^1]
+- **`cloudflared`** を install する。[^1]
     
     ```bash
     sudo mkdir -p --mode=0755 /usr/share/keyrings
@@ -64,7 +64,7 @@ https://www.proofpoint.com/jp/blog/threat-insight/threat-actor-abuses-cloudflare
 
 以上！わーお手軽！
 
-Cloudflare Tunnelを本格的に使うにはCloudflareのクレデンシャルでログインして設定が必要だけど、trycloudflareを使えばクレデンシャルもドメインも不要で公開できる。すごい。
+Cloudflare Tunnel を本格的に使うには Cloudflare のクレデンシャルでログインして設定が必要だけど、trycloudflare を使えばクレデンシャルもドメインも不要で公開できる。すごい。
 
 [^1]:[https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started/create-local-tunnel/](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/get-started/create-local-tunnel/)
 
@@ -95,17 +95,17 @@ hlpdsk@vm-dockerhost-helpdesk-dev-prxmx-01:~$ cloudflared tunnel --url http://lo
 
 ```
 
-枠で囲まれている部分が外部からアクセスできるURLになる。
+枠で囲まれている部分が外部からアクセスできる URL になる。
 
-このURLはコマンドを実行するたびに変わるので、雑に公開してもコマンドを停止すれば外部からアクセスできなくなる。
+この URL はコマンドを実行するたびに変わるので、雑に公開してもコマンドを停止すれば外部からアクセスできなくなる。
 
 つまり、用が終わればコマンドを切るだけで想定外の人からアクセスされなくなる。便利。
 
-ただし、SSH越しにコマンドを発行して放置していると、SSHのセッションが切れていつの間にか公開できなくなっているので注意（一敗）
+ただし、SSH 越しにコマンドを発行して放置していると、SSH のセッションが切れていつの間にか公開できなくなっているので注意（一敗）
 
 ## まとめ
 
-- よく悪用されていると噂のtrycloudflareを試してみた。
+- よく悪用されていると噂の trycloudflare を試してみた。
 - 思った以上にとても簡単に公開できてしまった。
 - そりゃ悪い人も使うわと思うとともに、開発者視点だと手軽にローカル環境を公開できてとても便利
 - 開発者のみんなはぜひ使って欲しい。
